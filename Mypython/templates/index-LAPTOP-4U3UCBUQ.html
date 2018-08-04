@@ -1,0 +1,157 @@
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(function(){
+        $('#tj').on('click', function(){
+          str=''
+          str1=''
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url:"index_ajax/{{request.user}}",
+                data:$('#dcl').serialize(),
+                async: true,
+                beforeSend:function()
+                    {
+                        $("#jsCompanyTips").html("<span style='color:blue'>正在处理...</span>");
+                        return true;
+                    },
+                success: function(data) {
+                  
+                    if(data.status == 'failure'){              
+                        for(var i=0;i<data.msg.length;i++){
+                                      for (errkey in data.msg[i]){
+                                                    console.log(errkey);
+                                                    domid = '#id_form-'+i+'-'+errkey;
+                                                    s = 'data.msg[i].'+errkey;
+                                                    errinfo = eval(s);
+                                                    console.log(domid);
+                                                    console.log(errinfo);
+                                                    $(domid).val('');
+                                                    $(domid).attr('placeholder',errinfo)
+                                            } 
+
+                                    }
+                                    $('#jsCompanyTips').html('');
+                    }
+                    else{
+                      $('#dcl')[0].reset();
+                        $('#jsCompanyTips').html('');
+                        // $('#dcltable').append('<tr><td>'+data.dcldata[0].xm+'</td></tr>');
+                        
+                        $.each(data,function(i,item){
+                          i=i+1
+                          str1=
+                           '<tr><td>'+i+'</td><td>'+item.pk+'</td><td>'+item.fields.xm+
+                            '</td><td>'+item.fields.ybh+'</td><td>'
+                           +item.fields.dwmc+
+                            '</td><td>'+item.fields.yhm+
+                            '</td><td>'+item.fields.xhm+
+                            '</td><td>'+item.fields.fbz+
+                            '</td><td>'+item.fields.fbsj+
+                            '</td><td>'+item.fields.bz+'</td></tr>';
+                            str+=str1;
+                            console.log(str)
+
+                        })
+
+                        $('#dclbody').html(str);
+                        // alert("提交成功")
+                    }
+                }
+            });
+        });
+    })
+</script>
+<script type="text/javascript">
+function addNew(){
+      var edittable = $('#dcledit')
+      row_count = edittable.find("tr").length-1;
+      var row = $("<tr></tr>")
+      row.append('<td><input type="text" name="form-'+row_count+'-xm" maxlength="10" id="id_form-'+row_count+'-xm"></td>');
+      // row.append('<td><input type="number" name="form-'+row_count+'-ybh" id="id_form-'+row_count+'-ybh"></td>');
+      row.append('<td><input type="number" name="form-'+row_count+'-ybh" id="id_form-'+row_count+'-ybh"></td>');
+      row.append('<td><select name="form-'+row_count+'-dwmc" id="id_form-'+row_count+'-dwmc"> <option value="1">成都车站</option><option value="2">成都东站</option><option value="3">成都机务段</option><option value="4">成都局</option></select></td>');
+        row.append('<td><input type="text" name="form-'+row_count+'-yhm" maxlength="11" id="id_form-'+row_count+'-yhm"></td>')
+        row.append('<td><input type="text" name="form-'+row_count+'-xhm" maxlength="11" id="id_form-'+row_count+'-xhm"></td>')
+        row.append('<td><input type="text" name="form-'+row_count+'-bz" maxlength="10" id="id_form-'+row_count+'-bz"></td>')
+        row.append('<td><input type="text" name="form-'+row_count+'-fbz" value="acerjin" maxlength="10" id="id_form-'+row_count+'-fbz"></td>')
+        edittable.append(row)
+        $('#id_form-TOTAL_FORMS').val(row_count+1)
+      console.log(row_count)
+}
+</script>
+用户名：{{request.user}}<a href="logout">退出</a><br>
+
+<form method="POST" action="" id="dcl">
+
+    <table id="dcledit" class="table table-condensed" >
+    	<tr>
+    		<td>姓名</td>
+    		<td>医保号</td>
+    		<td>单位名称</td>
+    		<td>原号码</td>
+    		<td>新号码</td>
+    		<td>备注</td>
+        <td>发布者</td>
+    	</tr>
+    	{{f.management_form }}
+       {%for fs in f %}
+      <tr>
+      	<td>{{ fs.xm}}</td>
+      	<td>{{ fs.ybh}}</td>
+      	<td>{{ fs.dwmc}}</td>
+      	<td>{{ fs.yhm}}</td>
+      	<td>{{ fs.xhm}}</td>
+      	<td>{{ fs.bz}}</td>
+        <td><input type="text" name="form-{{ forloop.counter|add:-1 }}-fbz" value="{{request.user}}" maxlength="10" id="id_form-{{ forloop.counter|add:-1 }}-fbz" /></td>
+        <!-- <td>{{fs.DELETE}}</td>
+        <td>{{fs.ORDER}}</td> -->
+      </tr>
+       {% endfor %}
+
+    </table>
+    <input type="button" value="添加" onclick="addNew();"> 
+</form>
+<p id="jsCompanyTips"></p>
+<!-- <input type="submit" name="" id="">1 -->
+<input type="submit" name="tj" id="tj">提交Ajax方式
+<table id="dcltable" class="table table-hover table-condensed table-bordered">
+<thead>
+<tr>
+	<th>序号</th>
+  <th>变更编号</th>
+	<th>姓名</th>
+	<th>医保号</th>
+	<th>单位名称</th>
+	<th>原号码</th>
+	<th>新号码</th>
+	<th>发布者</th>
+	<th>发布时间</th>
+	<th>备注</th>
+</tr>
+</thead>
+<tbody id="dclbody">
+ {% for d in dcl %}
+      <tr> 
+      	<td>{{ forloop.counter}}</td>
+        <td>{{d.id}}</td>
+      	<td>{{d.xm}}</td>
+      	<td>{{d.ybh}}</td>
+      	<td>{{d.dwmc}}</td>
+      	<td>{{d.yhm}}</td>
+      	<td>{{d.xhm}}</td>
+      	<td>{{d.fbz}}</td>
+      	<td>{{d.fbsj}}</td>
+      	<td>{{d.bz}}</td>
+      </tr>
+       {% endfor %}
+ </tbody>      
+       </table>
