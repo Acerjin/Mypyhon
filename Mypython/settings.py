@@ -25,7 +25,7 @@ SECRET_KEY = '$jh$#!!dk@d2zrs6h8i6ue3ppaf%(-$l49cou70bkvw#k6x45$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','172.23.23.222','192.168.1.12']
+ALLOWED_HOSTS = ['127.0.0.1','172.23.23.222','192.168.1.12','192.168.43.149']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #'crispy_forms',
     #'reversion',
     'Myuser',
+    'rbac',
    # 'debug_toolbar',
 ]
 
@@ -150,3 +151,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_URL = "/Myuser/login"
+
+
+SESSION_PERMISSION_URL_KEY = 'cool'
+
+SESSION_MENU_KEY = 'awesome'
+ALL_MENU_KEY = 'k1'
+PERMISSION_MENU_KEY = 'k2'

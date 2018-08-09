@@ -1,4 +1,4 @@
-"""Mypython URL Configuration
+"""rbac URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -14,23 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url,include
-from django.contrib import admin
-from django.conf import settings
-#import xadmin
-#from xadmin.plugins import xversion
-#xversion.register_models()
-
-#xadmin.autodiscover()
+from . import views
 
 urlpatterns = [
-	# url(r'^admin/doc/',include('django.contrib.admindocs.urls')),
-    url(r'^admin/', admin.site.urls), 
-    #url(r'^xadmin/', xadmin.site.urls),
-    url(r'^Myuser/', include('Myuser.urls')),
-    url(r'^rbac/',include('rbac.urls'))
+   url(r'^users/$',views.users),
+   url(r'^$',views.index),
+   url(r'^login/$',views.login),
 ]
-if settings.DEBUG:
-   # import debug_toolbar
-    urlpatterns = [
-        #url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns

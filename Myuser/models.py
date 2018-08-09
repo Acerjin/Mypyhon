@@ -35,6 +35,9 @@ class dclxxb(models.Model):
     class Meta:
         verbose_name='待处理信息表'
         verbose_name_plural='待处理信息表'
+        permissions = (
+            ('cl','处理'),
+        )
     def __str__(self):
         return self.xm
     def natural_key(self):
@@ -42,6 +45,7 @@ class dclxxb(models.Model):
     natural_key.dependencies = ['Myuser.dwxx']
     def get_absolute_url(self):
     	return reverse('dclxxb:detail',kwargs={'id':self.id})
+
 class cljl(models.Model):
     id = models.AutoField(primary_key=True)
     # bh = models.ForeignKey(dclxxb,verbose_name='编号')
@@ -65,3 +69,12 @@ class UserAccount(models.Model):
         verbose_name_plural = u'用户信息'  
     def __str__(self):
         return (self.user.username)
+
+
+
+class Permission(models.Model):
+    """
+     quanxianguanli
+    """
+    title = models.CharField(max_length=32)
+    url = models.CharField(max_length=255)
